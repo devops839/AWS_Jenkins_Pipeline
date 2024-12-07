@@ -98,7 +98,3 @@ We welcome contributions! If you'd like to help improve the Voting App or the pi
 
 ---
 
-## 📜 **License**
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more information.
-
