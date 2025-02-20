@@ -5,7 +5,7 @@ metadata:
   labels:
     app: voting-app
 spec:
-  replicas: 3  # Number of pod replicas
+  replicas: 3
   selector:
     matchLabels:
       app: voting-app
@@ -14,14 +14,12 @@ spec:
       labels:
         app: voting-app
     spec:
-      imagePullSecrets:
-        - name: acr-secret  # Reference to the Kubernetes secret
       containers:
         - name: voting-app-container
-          image: "481665128974.dkr.ecr.us-west-2.amazonaws.com/app:${BUILD_NUMBER}"
-          imagePullPolicy: Always  # Ensure the image is always pulled from ECR
+          image: "IMAGE"
+          imagePullPolicy: Always
           ports:
-            - containerPort: 8080  # Expose port 8080 from the container
+            - containerPort: 8080
           resources:
             requests:
               memory: "256Mi"
@@ -39,6 +37,6 @@ spec:
     app: voting-app
   ports:
     - protocol: TCP
-      port: 80      # Port on which the service will be exposed
-      targetPort: 8080  # Port the container is listening on
-  type: LoadBalancer  # Type of service, this exposes the app externally
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
