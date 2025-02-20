@@ -30,6 +30,6 @@ phases:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Updating Kubernetes Deployment...
-      - sed -i "s|image: .*|image: \"$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG\"|g" k8s/vote_deploy_eks.yaml
+      - sed -i "s|image: .*|image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG|g" k8s/vote_deploy_eks.yaml
       - kubectl apply -f k8s/vote_deploy_eks.yaml --validate=false
       - kubectl rollout status deployment/$DEPLOYMENT_NAME
