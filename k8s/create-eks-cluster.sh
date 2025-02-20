@@ -33,7 +33,17 @@ aws ecr create-repository \
   --repository-name $ECR_REPO_NAME \
   --region $AWS_REGION
 
+# Create IAM identity mapping for the role to access Kubernetes
+echo "Creating IAM identity mapping for CodeBuildKubectlRole..."
+eksctl create iamidentitymapping \
+  --cluster $CLUSTER_NAME \
+  --region $AWS_REGION \
+  --arn arn:aws:iam::123456:role/CodeBuildKubectlRole \
+  --group system:masters \
+  --username CodeBuildKubectlRole
+
 # Output the details
-echo "EKS Cluster and ECR Repository created successfully!"
+echo "EKS Cluster, ECR Repository, and IAM Identity Mapping created successfully!"
 echo "EKS Cluster: $CLUSTER_NAME"
 echo "ECR Repository: $ECR_REPO_NAME"
+echo "IAM Identity Mapping for CodeBuildKubectlRole created."
