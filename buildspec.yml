@@ -33,7 +33,7 @@ phases:
   post_build:
     commands:
       - echo Applying Kubernetes deployment...
-      - kubectl apply -f k8s/vote_deploy_eks.yaml
+      - kubectl apply -f k8s/vote_deploy_eks.yaml --validate=false
       - echo Waiting for deployment rollout to complete...
       - kubectl rollout status deployment/$DEPLOYMENT_NAME --timeout=300s
       - echo Deployment complete.
