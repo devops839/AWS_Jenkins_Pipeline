@@ -17,7 +17,6 @@ phases:
       - echo Setting up kubectl...
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
       - echo Verifying kubectl setup...
-      - kubectl get nodes
 
   build:
     commands:
@@ -26,16 +25,22 @@ phases:
       - docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG .
       - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - echo Build completed on `date`
-
-  post_build:
-    commands:
       - echo Pushing the Docker image...
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
-      - echo Deploying to Kubernetes using kubectl...
+      - echo Updating Kubernetes Deployment...
+      - sed -i "s|^(\s*image:).*|\1 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG|" k8s/vote_deploy_eks.yaml
+      - echo Committing the changes to the source repository...
+      - git config --global user.email "pavank839@outlook.com"
+      - git config --global user.name "Pavan"
+      - git add k8s/vote_deploy_eks.yaml
+      - git commit -m "Updated deployment YAML with the new image tag and account details"
+      - git push origin main
+      - cat k8s/vote_deploy_eks.yaml
+	  
+  post_build:
+    commands:
+      - echo Applying the deployment to the cluster...
       - kubectl apply -f k8s/vote_deploy_eks.yaml
-      - kubectl rollout status deployment/$DEPLOYMENT_NAME
-
-  # Optional: Clean up resources or handle any post-deploy tasks if needed
-artifacts:
-  files:
-    - k8s/vote_deploy_eks.yaml
+      - echo Restarting the deployment...
+      - kubectl rollout restart deployment vote-deployment
+      - echo Deployment complete.
