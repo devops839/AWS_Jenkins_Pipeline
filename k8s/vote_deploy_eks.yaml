@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: voting-app-container
-          image: <YOUR_ECR_IMAGE>
+          image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
